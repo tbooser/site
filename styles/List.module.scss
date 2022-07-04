@@ -1,0 +1,21 @@
+.sidebar {
+  top: 0;
+  height: 100vh;
+  position: sticky;
+}
+
+.listColumn {
+  top: 0;
+  position: sticky;
+  z-index: 2;
+  border-bottom: 1px solid lightskyblue;
+}
+
+.listItem {
+  border-bottom: 1px solid salmon;
+}
+
+.unorderedList {
+  border-left: 1px solid lightskyblue;
+  border-right: 1px solid lightskyblue;
+}
