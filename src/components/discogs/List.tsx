@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { RecordItemType } from '../../pages/discogs/collection'
-import styles from '../../../styles/List.module.scss'
+import style from '../../../styles/List.module.scss'
 import { useState } from 'react'
 
 interface ListReturnTypes {
@@ -62,7 +62,7 @@ const List = (props: ListReturnTypes) => {
   return (
     <>
       <div className="columns">
-        <div className={`${styles.sidebar} section column is-two-fifths`}>
+        <div className={`${style.sidebar} section column is-two-fifths`}>
           <h3 className="subtitle has-text-weight-semibold mb-0 pb-5">
             Genres
           </h3>
@@ -84,10 +84,10 @@ const List = (props: ListReturnTypes) => {
               })}
           </div>
           <div
-            className={`${styles.player} has-text-centered pt-4 is-flex is-flex-direction-column`}
+            className={`${style.player} has-text-centered pt-4 is-flex is-flex-direction-column`}
           >
             <div
-              className={`${styles.playerSectionTop} is-flex is-flex-direction-column  pt-4 pb-4`}
+              className={`${style.playerSectionTop} is-flex is-flex-direction-column  pt-4 pb-4`}
             >
               {/* <div className="is-flex is-flex-direction-row is-justify-content-space-evenly is-align-items-center"> */}
               <div className="columns">
@@ -108,7 +108,7 @@ const List = (props: ListReturnTypes) => {
                   </span>
                 ) : null}
               </div>
-              <span className={styles.trackNotes}>{currentTrackNotes}</span>
+              <span className={style.trackNotes}>{currentTrackNotes}</span>
             </div>
             <div className="is-flex is-align-items-flex-start is-flex-direction-column pt-4 pl-4 is-size-7">
               {currentRecordVideos?.map((video) => {
@@ -124,7 +124,7 @@ const List = (props: ListReturnTypes) => {
         </div>
         <div className="section column columns is-flex is-flex-direction-column mt-0 pt-0">
           <div
-            className={`${styles.listHeader} columns pt-6 pr-6 pl-6 has-background-white`}
+            className={`${style.listHeader} columns pt-6 pr-6 pl-6 has-background-white`}
           >
             <span className={listHeaderSpan}>
               <span className="has-text-link">{listSize}</span>&nbsp;records
@@ -137,7 +137,7 @@ const List = (props: ListReturnTypes) => {
             <span className={listHeaderSpan}></span>
           </div>
           <div className="column">
-            <ul className={`${styles.unorderedList} pr-6 pl-6 pt-4`}>
+            <ul className={`${style.unorderedList} pr-6 pl-6 pt-4`}>
               {list.map((record, index) => {
                 const {
                   id,
@@ -155,7 +155,7 @@ const List = (props: ListReturnTypes) => {
                   .split('')
                 return (
                   <li
-                    className={`${styles.listItem} columns has-text-weight-semibold`}
+                    className={`${style.listItem} columns has-text-weight-semibold`}
                     key={index}
                   >
                     <span className="column is-flex is-align-items-center is-justify-content-center">
@@ -189,7 +189,7 @@ const List = (props: ListReturnTypes) => {
           </div>
         </div>
       </div>
-      <div className={styles.footer}></div>
+      <div className={style.footer}></div>
     </>
   )
 }
