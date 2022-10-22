@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { RecordItemType } from '../../pages/discogs/collection'
 import styles from '../../../styles/List.module.scss'
+import { useState } from 'react'
 
 interface ListReturnTypes {
   list: Array<RecordItemType>
@@ -8,112 +9,188 @@ interface ListReturnTypes {
   listGenres: Array<string>
 }
 
+interface VideoItemTypes {
+  description: string
+  duration: number
+  embed: boolean
+  title: string
+  uri: string
+}
+
 const List = (props: ListReturnTypes) => {
+  const [currentTrack, setCurrentTrack] = useState<string | undefined>(
+    undefined,
+  )
+  const [currentTrackArtist, setCurrentTrackArtist] = useState<
+    string | undefined
+  >(undefined)
+  const [currentTrackNotes, setCurrentTrackNotes] = useState<
+    string | undefined
+  >(undefined)
+  const [currentRecordVideos, setCurrentRecordVideos] = useState<
+    Array<VideoItemTypes> | undefined
+  >(undefined)
+  const [currentRecordTitle, setCurrentRecordTitle] = useState<
+    string | undefined
+  >(undefined)
+  const [currentRecordImage, setCurrentRecordImage] = useState<string>('')
   const { list, listSize, listGenres } = props
-  const sidebar = `${styles.sidebar} section column is-one-third`
-  const listColumn = `${styles.listColumn} columns pt-6 has-background-white`
-  const listItem = `${styles.listItem} columns has-text-weight-semibold`
-  const unorderedList = `${styles.unorderedList} p-6`
+
+  const handleListenOnClick = async (resourceUrl: string, imageUrl: string) => {
+    try {
+      const response = await fetch(resourceUrl, {
+        method: 'GET',
+      })
+      const response_json = await response.json()
+      const { artists_sort, notes, videos, title } = response_json
+      setCurrentTrackArtist(artists_sort)
+      setCurrentTrackNotes(notes)
+      setCurrentRecordVideos(videos)
+      setCurrentRecordTitle(title)
+      setCurrentRecordImage(imageUrl)
+      console.log('json', response_json)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const listHeaderSpan =
+    'column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5'
+  const listItemSpan =
+    'column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7'
+
   return (
-    <div className="columns">
-      <div className={sidebar}>
-        <div>
-          <h3 className="subtitle has-text-weight-semibold">Genres</h3>
-          {listGenres
-            .sort((a: any, b: any) => {
-              return b[1] - a[1]
-            })
-            .map((genre) => {
-              return (
-                <button
-                  className="button is-small is-info is-light m-1"
-                  key={genre}
-                >
-                  {genre[0]}&nbsp;
-                  <span className="has-text-link-dark">{genre[1]}</span>
-                </button>
-              )
-            })}
-        </div>
-        <div className="player">Player</div>
-      </div>
-      <div className="section column columns is-flex is-flex-direction-column mt-0 pt-0">
-        <div className={listColumn}>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5">
-            <span className="has-text-link">{listSize}</span>&nbsp;records
-          </span>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5">
-            Artist
-          </span>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5">
-            Title
-          </span>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5">
-            Label
-          </span>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5">
+    <>
+      <div className="columns">
+        <div className={`${styles.sidebar} section column is-two-fifths`}>
+          <h3 className="subtitle has-text-weight-semibold mb-0 pb-5">
             Genres
-          </span>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5">
-            Year
-          </span>
-          <span className="column subtitle has-text-weight-semibold is-flex is-justify-content-center mb-0 pt-0 pb-5"></span>
-        </div>
-        <div className="column">
-          <ul className={unorderedList}>
-            {list.map((record, index) => {
-              const {
-                id,
-                resource_url,
-                cover_image,
-                artists,
-                title,
-                labels,
-                year,
-                styles,
-              } = record
-              const formattedGenres = styles
-                .join(',')
-                .replace(/,/g, ' | ')
-                .split('')
-              return (
-                <li className={listItem} key={index}>
-                  <span className="column is-flex is-align-items-center is-justify-content-center">
+          </h3>
+          <div className="pb-5 pr-4">
+            {listGenres
+              .sort((a: any, b: any) => {
+                return b[1] - a[1]
+              })
+              .map((genre) => {
+                return (
+                  <button
+                    className="button is-small is-info is-light m-1"
+                    key={genre}
+                  >
+                    {genre[0]}&nbsp;
+                    <span className="has-text-link-dark">{genre[1]}</span>
+                  </button>
+                )
+              })}
+          </div>
+          <div
+            className={`${styles.player} has-text-centered pt-4 is-flex is-flex-direction-column`}
+          >
+            <div
+              className={`${styles.playerSectionTop} is-flex is-flex-direction-column  pt-4 pb-4`}
+            >
+              {/* <div className="is-flex is-flex-direction-row is-justify-content-space-evenly is-align-items-center"> */}
+              <div className="columns">
+                <span className="column is-flex is-justify-content-center is-align-items-center is-size-6">
+                  {currentTrackArtist}
+                  {currentRecordTitle !== undefined ? ' - ' : null}
+                  {currentRecordTitle}
+                </span>
+                {currentRecordImage ? (
+                  <span className="column is-flex is-justify-content-center is-align-items-center">
                     <Image
                       unoptimized={true} /*TODO: Revisit this at some point*/
                       alt=""
-                      src={cover_image}
+                      src={currentRecordImage}
                       width={75}
                       height={75}
                     />
                   </span>
-                  <span className="column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7">
-                    {artists[0].name}
-                  </span>
-                  <span className="column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7">
-                    {title}
-                  </span>
-                  <span className="column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7">
-                    {labels[0].name}
-                  </span>
-                  <span className="column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7">
-                    {formattedGenres}
-                  </span>
-                  <span className="column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7">
-                    {year}
-                  </span>
-                  <span className="column heading is-flex is-align-items-center is-justify-content-center has-text-centered is-size-7">
-                    <button className="button is-small is-primary is-light is-outlined is-focused">
-                      Listen
-                    </button>
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
+                ) : null}
+              </div>
+              <span className={styles.trackNotes}>{currentTrackNotes}</span>
+            </div>
+            <div className="is-flex is-align-items-flex-start is-flex-direction-column pt-4 pl-4 is-size-7">
+              {currentRecordVideos?.map((video) => {
+                return (
+                  <>
+                    <span key={video.title}>{video.title}</span>
+                  </>
+                )
+              })}
+            </div>
+            <br />
+          </div>
+        </div>
+        <div className="section column columns is-flex is-flex-direction-column mt-0 pt-0">
+          <div
+            className={`${styles.listHeader} columns pt-6 pr-6 pl-6 has-background-white`}
+          >
+            <span className={listHeaderSpan}>
+              <span className="has-text-link">{listSize}</span>&nbsp;records
+            </span>
+            <span className={listHeaderSpan}>Artist</span>
+            <span className={listHeaderSpan}>Title</span>
+            <span className={listHeaderSpan}>Label</span>
+            <span className={listHeaderSpan}>Genres</span>
+            <span className={listHeaderSpan}>Year</span>
+            <span className={listHeaderSpan}></span>
+          </div>
+          <div className="column">
+            <ul className={`${styles.unorderedList} pr-6 pl-6 pt-4`}>
+              {list.map((record, index) => {
+                const {
+                  id,
+                  resource_url,
+                  cover_image,
+                  artists,
+                  title,
+                  labels,
+                  year,
+                  styles,
+                } = record
+                const formattedGenres = styles
+                  .join(',')
+                  .replace(/,/g, ' | ')
+                  .split('')
+                return (
+                  <li
+                    className={`${styles.listItem} columns has-text-weight-semibold`}
+                    key={index}
+                  >
+                    <span className="column is-flex is-align-items-center is-justify-content-center">
+                      <Image
+                        unoptimized={true} /*TODO: Revisit this at some point*/
+                        alt=""
+                        src={cover_image}
+                        width={75}
+                        height={75}
+                      />
+                    </span>
+                    <span className={listItemSpan}>{artists[0].name}</span>
+                    <span className={listItemSpan}>{title}</span>
+                    <span className={listItemSpan}>{labels[0].name}</span>
+                    <span className={listItemSpan}>{formattedGenres}</span>
+                    <span className={listItemSpan}>{year}</span>
+                    <span className={listItemSpan}>
+                      <button
+                        onClick={() => {
+                          handleListenOnClick(resource_url, cover_image)
+                        }}
+                        className="button is-small is-primary is-light is-outlined is-focused"
+                      >
+                        Listen
+                      </button>
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+      <div className={styles.footer}></div>
+    </>
   )
 }
 
