@@ -1,5 +1,7 @@
 .container {
   padding: 0 2rem;
+  background: #2a2c30;
+  color: #fff;
 }
 
 .main {
@@ -10,6 +12,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  line-height: 1.5;
 }
 
 .footer {
@@ -33,16 +36,29 @@
   text-decoration: none;
 }
 
-.title a:hover,
-.title a:focus,
-.title a:active {
+.links {
+  display: flex;
+  justify-content: inherit;
+  width: 100vw;
+}
+
+.links a:hover,
+.links a:focus,
+.links a:active {
   text-decoration: underline;
+  text-decoration-color: #cdde37;
+  text-decoration-style: dashed;
 }
 
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 6rem;
+}
+
+.link {
+  font-size: 2rem;
+  margin: 1rem;
 }
 
 .title,
